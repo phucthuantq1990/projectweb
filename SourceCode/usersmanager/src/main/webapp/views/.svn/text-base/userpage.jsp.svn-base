@@ -1,0 +1,675 @@
+<%@ page language="java" contentType="text/html; charset=utf-8"
+	pageEncoding="ISO-8859-1"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>User Manager System</title>
+<link href="resources/css/bootstrap.min.css" rel="stylesheet"
+	type="text/css" />
+<link href="resources/css/datatable.css" rel="stylesheet" />
+
+<link href="resources/date/css/bootstrap-datepicker.css" rel="stylesheet" />
+<link href="resources/date/css/bootstrap-datepicker3.css" rel="stylesheet" />
+<link href="resources/date/css/bootstrap-datepicker.standalone.css" rel="stylesheet" />
+<link href="resources/date/css/bootstrap-datepicker3.standalone.css" rel="stylesheet" />
+
+<!-- my css -->
+<link href="resources/myLib/css/manager-page.css" rel="stylesheet" />
+
+<script type="text/javascript" src="resources/js/jquery.js"></script>
+<script type="text/javascript" src="resources/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="resources/js/bootbox.js"></script>
+<script type="text/javascript" src="resources/js/Chart.js"></script>
+<script type="text/javascript" src="resources/js/datatable.js"></script>
+<script type="text/javascript" src="resources/js/datatable.bootstrap.js"></script>
+<script type="text/javascript" src="resources/date/js/bootstrap-datepicker.js"></script>
+<script type="text/javascript" src="resources/date/js/bootstrap-datepicker.min.js"></script>
+<!-- <script type="text/javascript" src="resources/myLib/js/manager-page.js"></script> -->
+<script type="text/javascript" src="resources/js/changestatus.js"></script>
+
+
+<!-- WebSocket -->
+<script type="text/javascript" src="resources/web-socket/sockjs-0.3.4.js"></script>
+<script type="text/javascript" src="resources/web-socket/stomp.js"></script>
+<script type="text/javascript" src="resources/web-socket/web-socket-admin.js"></script>
+
+
+
+</head>
+<body>
+	<input id="limitTemp" value="${limit}" />
+	<input id="offsetTemp" value="${offset}" />
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed"
+				data-toggle="collapse" data-target="#navbar" aria-expanded="false"
+				aria-controls="navbar">
+				<span class="sr-only">Toggle navigation</span> <span
+					class="icon-bar"></span> <span class="icon-bar"></span> <span
+					class="icon-bar"></span>
+			</button>
+			<!-- <a class="navbar-brand" href="#">Account Manager</a> -->
+			<img class="navbar-brand" alt="CSC banking account manager"
+				src="resources/images/CSCLogo.png" id="logo">
+		</div>
+		<div id="navbar" class="navbar-collapse collapse">
+			<ul class="nav navbar-nav">
+				<li class="active"><a href="managerpage">Home</a></li>
+				<li><a href="managerpage/createaccount" id="addacount">Add Account</a></li>
+				<li><a href="" data-toggle="modal"
+					data-target="#searchaccountmodal">Search Account</a></li>
+				<c:forEach items="${roles}" var="r">
+					<c:if test="${r.authority == 'admin'}">
+						<li><a href="managerpage/admin/logpage">System Log</a></li>
+					</c:if>
+				</c:forEach>
+				<li><a href="#" onclick="viewNewAccount();" id="viewNewAccount">View New <span class="badge" id="numberNew">${accountNew}</span></a></li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li><a onclick="logout();" id="logoutbtn"><span>Welcome
+							${username}!</span> Logout</a></li>
+			</ul>
+		</div>
+	</div>
+	</nav>
+	<div class="container theme-showcase" role="main"
+		style="margin-top: 80px; width: 1170px">
+		<div class="jumbotron">
+			<h2 style="font-weight: bold;" align="center">CSC banking
+				account manager</h2>
+		</div>
+		<div id="accountsfield">
+			<fieldset>
+				<legend>Accounts</legend>
+				<table id="tableaccountfield">
+					<tr>
+						<td><label style="color: #F5E58E;">New:</label></td>
+						<td id="new">${accountNew}</td>
+					</tr>
+					<tr>
+						<td><label style="color: #A7F289;">Active:</label></td>
+						<td id="active">${accountActived}</td>
+					</tr>
+					<tr>
+						<td><label style="color: #80C9ED;">Disable:</label></td>
+						<td id="disable">${accountDisabled}</td>
+					</tr>
+					<tr>
+						<td><label style="color: #EC9292;">Removable:</label></td>
+						<td id="removable">${accountRemoveable}</td>
+					</tr>
+					<tr>
+						<td><label>Total:</label></td>
+						<td id="total">${accountNew + accountActived + accountDisabled + accountRemoveable}</td>
+					</tr>
+				</table>
+				<div id="canvas-holder" style="margin-top: 30px">
+					<canvas id="chart-area" width="180" height="180" />
+				</div>
+			</fieldset>
+		</div>
+		<div id="listaccounts">
+			<fieldset>
+				<legend>List Accounts</legend>
+				<div id="pageselect">
+					<div style="margin-left: 510px; float: left;width: 300px">
+						<h5 style="margin-top: 8px; color: rgb(34, 152, 71);text-align: right;">
+							<span id="startoffset">${offset + 1 }</span>-<span id="endoffset">${limit}</span>
+							of <span id="totalAccount">${total }</span>
+						</h5>
+					</div>
+					<div class="btn-group" style="float: right">
+						<button id="pre" class="btn btn-default">
+							<span class="glyphicon glyphicon-menu-left" aria-hidden="true"></span>
+						</button>
+						<button id="next" class="btn btn-default">
+							<span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span>
+						</button>
+					</div>
+				</div>
+				<div id="divtableaccounts" style="margin-top: 20px">
+					<table id="tableaccounts" class="display table table-striped "
+						cellspacing="0">
+						<thead>
+							<tr>
+								<td>First Name</td>
+								<td>Last Name</td>
+								<td>Id Card Number</td>
+								<td>Account Number</td>
+								<td>Address</td>
+								<td>Email</td>
+								<td>Phone number</td>
+								<td>State</td>
+								<td></td>
+							</tr>
+						</thead>
+						<tbody>
+							
+						</tbody>
+					</table>
+				</div>
+			</fieldset>
+		</div>
+	</div>
+	<form id="logoutf" action="<c:url value='/j_spring_security_logout' />"
+		method="post">
+		<input type="hidden" name="${_csrf.parameterName}"
+			value="${_csrf.token}" />
+	</form>
+	<%@include file="searchaccount.jsp"%>
+	<script type="text/javascript">
+		var search = 1;
+		var accounts = [];
+		var limit = ${limit};
+		var offset = ${offset};
+		var total = ${total};
+		var table;
+		var newaccounts = ${accountNew};
+		var activeaccount = ${accountActived};
+		var disableaccount = ${accountDisabled};
+		var removableaccount = ${accountRemoveable};
+		var role;
+		$(document).ready(
+				
+				function() {
+					
+					connect();
+					getRole();
+				/* if(role.indexOf("admin") === -1){
+						$('#viewNewAccount').hide();
+					} */
+					search = 1;
+					changestate();
+					
+					<%@include file="../lib/js/changestatus.js"%>
+					
+					//pre click
+					$("#pre").click(function(){
+						offset = parseInt($("#startoffset").html()) - 1;
+						nOffset = offset - limit;
+						if(nOffset < 0) {
+							return;
+						}
+						
+						if(nOffset == 0) {
+							offset = 0;
+							$("#endoffset").html(nOffset + limit);
+							$("#startoffset").html(1);
+						} else {
+							offset = nOffset;
+							$("#endoffset").html(offset + limit);
+							$("#startoffset").html(offset + 1);
+						}
+						if(search === 2) {
+							var formData = JSON.parse(JSON.stringify(jQuery('#searchForm').serializeArray()));
+							getSearch(formData);
+						} else if (search == 3) {
+							var formData = JSON.parse(JSON.stringify(jQuery('#searchForm').serializeArray()));
+							formData[8].value = 1;
+							getSearch(formData);
+						} else {
+							getAccounts();
+						};
+						
+						
+					});
+					//next click
+					$("#next").click(function(){
+						offset = parseInt($("#startoffset").html()) - 1;
+						nOffset = offset + limit;
+						endOffset = parseInt($("#endoffset").html());
+                        if(endOffset == total) {
+                            return;
+                        }
+
+						if(nOffset > total) {
+							return;
+						}
+						
+						if(nOffset == total) {
+							offset = total - 1;
+							$("#endoffset").html(total);
+							$("#startoffset").html(total);
+						} else {
+							offset = nOffset;
+							$("#endoffset").html(offset + limit);
+							if(offset + limit > total){
+								$("#endoffset").html(total);
+							}
+							$("#startoffset").html(offset + 1);
+						}
+						if(search === 2) {
+							var formData = JSON.parse(JSON.stringify(jQuery('#searchForm').serializeArray()));
+							getSearch(formData);
+						} else if (search == 3) {
+							var formData = JSON.parse(JSON.stringify(jQuery('#searchForm').serializeArray()));
+							formData[8].value = 1;
+							getSearch(formData);
+						} else {
+							getAccounts();
+						};
+						
+					});
+					//draw table with datatable
+					table = $('#tableaccounts').dataTable();
+					if(search === 2) {
+						var formData = JSON.parse(JSON.stringify(jQuery('#searchForm').serializeArray()));
+						getSearch(formData);
+					} else if (search == 3) {
+						var formData = JSON.parse(JSON.stringify(jQuery('#searchForm').serializeArray()));
+						formData[8].value = 1;
+						getSearch(formData);
+					} else {
+						getAccounts();
+					};
+					drawChart();
+					
+					//modify submit form
+					$("#modifyform").submit(function(e){
+						e.preventDefault();
+						bootbox.confirm("Modify account info?",function(result){
+							if(result){
+								if(!validateFormModify()){
+									return;
+								}
+								var data = {};
+								$("#modifyform").serializeArray().map(function(x) {data[x.name] = x.value;});
+								$.ajax({
+									url : "managerpage/modify",
+								headers : {
+									'Accept' : 'application/json',
+									'Content-Type' : 'application/json'
+								},
+								type : "post",
+								dataType : 'json',
+								data : JSON.stringify(data),
+								beforeSend : function(xhr) {
+									var token = $("meta[name='_csrf']").attr("content");
+									var header = $("meta[name='_csrf_header']").attr("content");
+									xhr.setRequestHeader(header,token);
+								}
+								}).done(function(data){
+									if(data != "error"){
+									$.each(accounts,function(index){
+										if(this.id == data.id) {
+											accounts.splice(index,1);
+										}
+									});
+									$.each(accounts,function(index){
+										if(this.idCardNumber == data.idCardNumber) {
+											this.firstName = data.firstName;
+											this.lastName = data.lastName;
+											this.midName = data.midName;
+											this.address01 = data.address01;
+											this.address02 = data.address02;
+											this.phoneNumber01 = data.phoneNumber01;
+											this.phoneNumber02 = data.phoneNumber02;
+											this.email01 = data.email01;
+											this.email02 = data.email02;
+										}
+									});
+									accounts.push(data);
+									redrawTable();
+									showdetail();
+									$('#viewNewAccount').val(newaccounts);
+									$("#accountdetailmodal").modal("hide");
+									bootbox.alert("Successful modify!");
+									}
+									else{
+										bootbox.alert("Error input data...");
+									}
+								}).fail(function(error){
+									alert("System Error...");
+								});
+								$("#btnmodifycontent").html(
+										"Modifing...");
+								$("#modifybtn").attr(
+										'disabled', 'disabled');
+								$("#btnmodifyi").show();
+							}
+						});
+					});
+				});
+		function validateFormModify() {
+		    var firstname = document.forms["modifyForm"]["firstName"].value;
+		    document.getElementById("validateFirstName").innerHTML = "";
+		    $("#firstNameField").attr("class","");
+		    var lastname = document.forms["modifyForm"]["lastName"].value;
+		    document.getElementById("validateLastName").innerHTML = "";
+		    $("#lastNameField").attr("class","");
+		    var idCard = document.forms["modifyForm"]["idCardNumber"].value;
+		    document.getElementById("validateCardNumber").innerHTML = "";
+		    $("#idCardNumberField").attr("class","");
+		    var address1 = document.forms["modifyForm"]["address01"].value;
+		    document.getElementById("validateAddress01").innerHTML = "";
+		    $("#address01Field").attr("class","");
+		    var phone1 = document.forms["modifyForm"]["phoneNumber01"].value;
+		    document.getElementById("validatePhone1").innerHTML = "";
+		    $("#phone01Field").attr("class","");
+		    var phone2 = document.forms["modifyForm"]["phoneNumber02"].value;
+		    document.getElementById("validatePhone2").innerHTML = "";
+		    $("#phone02Field").attr("class","");
+		    var result = true;
+		    if (firstname.toString().length < 2 || firstname.toString().length > 45) {
+		    	var a = "The field has more than 2 and less 45 character.";
+		    	document.getElementById("validateFirstName").innerHTML = a;
+		    	$("#firstNameField").attr("class","has-error");
+		       result = false;
+		    }
+		    if (lastname.toString().length < 2 || lastname.toString().length > 45) {
+		    	var a = "The field has more than 2 and less 45 character.";
+		    	document.getElementById("validateLastName").innerHTML = a;
+		    	$("#lastNameField").attr("class","has-error");
+		       result = false;
+		      }
+		    if (idCard.toString().length != 9 || isNaN(idCard) == true ) {
+		    	var a = "The field has to exactly 9 number.";
+		    	document.getElementById("validateCardNumber").innerHTML = a;
+		    	$("#idCardNumberField").attr("class","has-error");
+		       result = false;
+		      }
+		    if (address1.toString().length < 5 || address1.toString().length > 200 ) {
+		    	var a = "The field has more than 5 and less 200 character.";
+		    	document.getElementById("validateAddress01").innerHTML = a;
+		    	$("#address01Field").attr("class","has-error");
+		       result = false;
+		      }
+		    if (phone1.toString().length < 10 || isNaN(phone1) == true || phone1.toString().length > 11 ) {
+			    	var a = "This number phone is incorect.";
+			    	document.getElementById("validatePhone1").innerHTML = a;
+			    	$("#phone01Field").attr("class","has-error");
+		      		 result = false;
+		      }
+			if(phone2.toString() != "")
+				{ 
+				if (phone2.toString().length < 10 || isNaN(phone2) == true || phone2.toString().length > 11 ) {
+				
+				    	var a = "This number phone is incorect.";
+				    	document.getElementById("validatePhone2").innerHTML = a;
+				    	$("#phone02Field").attr("class","has-error");
+				       result = false;
+				      }
+				}
+			return result;	
+		  }
+		function drawChart(){
+			var pieData = [ {
+				value : newaccounts,
+				color : "#F5E58E",
+				highlight : "#F5E58E",
+				label : "New"
+			}, {
+				value : activeaccount,
+				color : "#A7F289",
+				highlight : "#A7F289",
+				label : "Active"
+			}, {
+				value : disableaccount,
+				color : "#80C9ED",
+				highlight : "#80C9ED",
+				label : "Disable"
+			}, {
+				value : removableaccount,
+				color : "#EC9292",
+				highlight : "#EC9292",
+				label : "Removable"
+			} ];
+
+			var ctx = document.getElementById("chart-area").getContext(
+					"2d");
+			window.myPie = new Chart(ctx).Pie(pieData);
+		}
+		function getAccounts(){
+			$.ajax({
+				url : "managerpage/getaccounts",
+				type : "get",
+				dataType : 'json',
+				data : {
+					'limit' : limit,
+					'offset' : offset
+				},
+				beforeSend : function(xhr) {
+					var token = $("meta[name='_csrf']").attr(
+							"content");
+					var header = $("meta[name='_csrf_header']")
+							.attr("content");
+					xhr.setRequestHeader(header, token);
+				}
+			}).done(function(data){
+				accounts = data;
+				redrawTable();
+				showdetail();
+			}).fail(function(error){
+				bootbox.alert("Error! Please try again later");
+				console.log(error);
+			});
+		}
+		
+		function getSearch(formData){
+			$.ajax({
+				url : "managerpage/search?limit="+limit+"&offset="+offset+"",
+				type : "POST",
+				dataType : 'json',
+				data : formData,
+				beforeSend : function(xhr) {
+					var token = $("meta[name='_csrf']").attr(
+							"content");
+					var header = $("meta[name='_csrf_header']")
+							.attr("content");
+					xhr.setRequestHeader(header, token);
+				}
+			}).done(function(data){
+				accounts = data.account;
+				total = data.totalSearch;
+				$("#totalAccount").html(total);
+				redrawTable();
+				showdetail();
+				$("#searchaccountmodal").modal("hide");
+			}).fail(function(error){
+				customAlert("Error! Please try again later");
+			})
+		}
+		
+		function redrawTable(){
+			table.fnClearTable();
+			$.each(accounts,function(){
+				s = [this.customer.firstName,this.customer.lastName,this.customer.idCardNumber,this.number,this.customer.address01,this.customer.email01,"0"+this.customer.phoneNumber01,this.state.accountState,this.id];
+				var a = table.fnAddData(s);
+				var oSettings = table.fnSettings();
+				var nTr = oSettings.aoData[ a[0] ].nTr;
+				if($($(nTr).find('td')[7]).html() == "New"){
+					$(nTr).attr("class","warning");
+				}
+				if($($(nTr).find('td')[7]).html() == "Active"){
+					$(nTr).attr("class","success");
+				}
+				if($($(nTr).find('td')[7]).html() == "Disable"){
+					$(nTr).attr("class","info");
+				}
+				if($($(nTr).find('td')[7]).html() == "Removable"){
+					$(nTr).attr("class","danger");
+				}
+				$($(nTr).find('td')[8]).attr("class",'id');
+				$($(nTr).find('td')[8]).attr("style","visibility: hidden;");
+			});
+		}
+		
+		function viewNewAccount() {
+			search = 3;
+			$("#searchForm")[0].reset();
+			var formData = JSON.parse(JSON.stringify(jQuery('#searchForm').serializeArray()));
+			formData[8].value = 1;
+			offset = 0;
+			$("#startoffset").html(offset + 1);
+			$("#endoffset").html(offset + limit);
+			getSearch(formData);
+		}
+		
+		//change status click button
+		<%@include file="../lib/js/managerpage.js"%>
+		function logout() {
+			$("#logoutf").submit();
+		}
+		function customAlert(msg) {
+			$("#alertcontent").html(msg);
+			$("#alertbox").modal("show");
+		}
+		function getRole() {
+			$.ajax({
+			    url: "managerpage/getrole",
+			    type: 'GET',
+			    dataType: 'json',
+			    contentType: 'application/json',
+			    mimeType: 'application/json',
+			    success: function(data) {
+			    	role = data;
+			   	},
+			    error: function(error) {
+			    	console.log(error);
+			    }
+			}); 
+		}
+		
+		<%@include file="../lib/js/showdetail.js"%>
+	</script>
+
+
+	<!-- Account detail modal -->
+
+	<div id="accountdetailmodal" class="modal fade" role="dialog"
+		data-backdrop="static">
+		<div class="modal-dialog">
+			<form action="managerpage/modify" id="modifyform" name ="modifyForm"
+				method="post">
+				<!-- Modal content-->
+				<div class="modal-content" style="width: 600px">
+					<div class="modal-header">
+						<h2 style="color: rgb(255, 174, 0); float: left;">Account
+							Detail</h2>
+						<img style="margin-left: 274px" width="100px" height="60px"
+							alt="logo" src="resources/image/CSCLogo.png">
+					</div>
+					<div class="modal-body" >
+					<label>Account Number:</label><input type="text" name="number"
+							class="form-control" required="required" disabled="disabled"/>	 
+						<div id="firstNameField"><label>First name:</label> <input type="text" name="firstName"
+							class="form-control" required="required" /></div>
+						<label id ="validateFirstName" class ="validate"></label><br>
+						<div id="lastNameField"><label>Lastname:</label> <input type="text" name="lastName" class="form-control"
+							required="required" /></div>
+							<label id ="validateLastName" class ="validate"></label><br>
+							<label>Mid name:</label> <input
+							type="text" name="midName" class="form-control" />
+							<div id="idCardNumberField"> <label>Id Card Number:</label> <input
+							type="text" name="idCardNumber" class="form-control"
+							required="required" readonly/></div>
+							<label id ="validateCardNumber" class ="validate"></label><br>
+							<div id="address01Field"><label>Address 01:</label> <input
+							type="text" name="address01" class="form-control"
+							required="required" /> </div>
+							<label id ="validateAddress01" class ="validate"></label><br>
+							<label>Address 02:</label>
+							<input type="text" name="address02" class="form-control" /> 
+							
+							<div id="phone01Field"><label>Phone
+							Number 01:</label> <input type="text" name="phoneNumber01"
+							class="form-control" required="required" /> </div>
+							<label id ="validatePhone1" class ="validate"></label><br> 
+							<div id="phone02Field"><label>Phone
+							Number 02:</label> <input type="text" name="phoneNumber02"
+							class="form-control" /> </div>
+							<label id ="validatePhone2" class ="validate"></label><br>
+							<label>Email 01:</label> <input
+							type="email" name="email01" class="form-control"
+							required="required" /> <label>Email 02:</label> <input
+							type="email" name="email02" class="form-control" /> <label>Account
+							Type: </label> <select id="accounttypeselect" name="accountTypeId"
+							class="form-control" disabled="disabled">
+							<option value="0">Select</option>
+							<c:forEach items="${accountTypes}" var="accountType">
+								<option value="${accountType.accountTypeId }">${accountType.accountType }</option>
+							</c:forEach>
+						</select>
+					</div>
+					
+					<div class="modal-footer" id="ftmodal">
+					<c:forEach items="${roles}" var="r">
+						<c:if test="${r.authority == 'admin'}">
+							<button type="button" class="btn btn-danger" id="changestatusbtn">
+								Change Account State
+							</button>
+						</c:if>
+					</c:forEach>
+					<button type="submit" class="btn btn-info" id="modifybtn">
+							<span
+								class="glyphicon glyphicon-refresh glyphicon-refresh-animate"
+								id="btnmodifyi"></span> <span id="btnmodifycontent">Modify</span>
+						</button>
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+				<input name="id" required style="visibility: hidden;"/>
+				<input name="accountStateId" required style="visibility: hidden;"/>
+			</form>
+		</div>
+	</div>
+
+
+
+<!-- change state modal -->
+<c:forEach items="${roles }" var="r">
+	<c:if test="${r.authority == 'admin'}">
+	<div id="changestatusmodal" class="modal fade" role="dialog" data-backdrop="static">
+		<div class="modal-dialog">
+			<!-- Modal content-->
+			<div class="modal-content">
+			<div class="modal-header">
+			<h2 style="color: rgb(255, 0, 136); float: left;">Change
+							Account State</h2>
+						<img style="margin-left: 164px" width="100px" height="60px"
+							alt="logo" src="resources/image/CSCLogo.png">
+			</div>
+			<form action="" id="changestatusform">
+				<div class="modal-body">
+					<label>Account number:</label> <input name="number" class="form-control" readonly/>
+					<label>Customer Name:</label> <input name="customerName" class="form-control" readonly/>
+					<label>Account state:</label><select name="accountState" class="form-control"></select>
+					<input name="id" class="form-control" readonly style="visibility: hidden;"/>
+				</div>
+				<div class="modal-footer">
+				<button type="submit" class="btn btn-danger" id="changebtn"><span
+								class="glyphicon glyphicon-refresh glyphicon-refresh-animate"
+								id="btnchangei"></span> <span id="btnchangecontent">Change</span></button>
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				</div>
+			</form>
+			</div>
+		</div>
+	</div>
+	</c:if>
+</c:forEach>
+	
+
+
+	<!-- message modal -->
+	<div id="alertbox" class="modal fade" role="dialog">
+		<div class="modal-dialog">
+
+			<!-- Modal content-->
+			<div class="modal-content">
+				<div class="modal-body">
+					<p id="alertcontent">Some text in the modal.</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+</body>
+</html>

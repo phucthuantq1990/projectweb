@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/accountsmanager/!svn/ver/127/trunk/usersmanager/src/main/webapp/views
+END
+register.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/accountsmanager/!svn/ver/124/trunk/usersmanager/src/main/webapp/views/register.jsp
+END
+adminpage.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/accountsmanager/!svn/ver/128/trunk/usersmanager/src/main/webapp/views/adminpage.jsp
+END
+loginpage.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/accountsmanager/!svn/ver/124/trunk/usersmanager/src/main/webapp/views/loginpage.jsp
+END
+userpage.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/accountsmanager/!svn/ver/127/trunk/usersmanager/src/main/webapp/views/userpage.jsp
+END
+createUserPage.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/accountsmanager/!svn/ver/128/trunk/usersmanager/src/main/webapp/views/createUserPage.jsp
+END
+searchaccount.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/accountsmanager/!svn/ver/126/trunk/usersmanager/src/main/webapp/views/searchaccount.jsp
+END

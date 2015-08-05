@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svn/accountsmanager/!svn/ver/123/trunk/usersmanager/src/main/webapp/lib/web-socket
+END
+websocket.js
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/accountsmanager/!svn/ver/123/trunk/usersmanager/src/main/webapp/lib/web-socket/websocket.js
+END
+web-socket-admin.js
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svn/accountsmanager/!svn/ver/123/trunk/usersmanager/src/main/webapp/lib/web-socket/web-socket-admin.js
+END
+sockjs-0.3.4.js
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/accountsmanager/!svn/ver/123/trunk/usersmanager/src/main/webapp/lib/web-socket/sockjs-0.3.4.js
+END
+stomp.js
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/accountsmanager/!svn/ver/123/trunk/usersmanager/src/main/webapp/lib/web-socket/stomp.js
+END

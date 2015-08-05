@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/accountsmanager/!svn/ver/127/trunk/usersmanager/src/main/java/csc/com/service
+END
+UserService.java
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/accountsmanager/!svn/ver/124/trunk/usersmanager/src/main/java/csc/com/service/UserService.java
+END
+UserRoleService.java
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svn/accountsmanager/!svn/ver/126/trunk/usersmanager/src/main/java/csc/com/service/UserRoleService.java
+END
+UserRoleServiceImpl.java
+K 25
+svn:wc:ra_dav:version-url
+V 107
+/svn/accountsmanager/!svn/ver/126/trunk/usersmanager/src/main/java/csc/com/service/UserRoleServiceImpl.java
+END
+UserServiceImplement.java
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/svn/accountsmanager/!svn/ver/127/trunk/usersmanager/src/main/java/csc/com/service/UserServiceImplement.java
+END

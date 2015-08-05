@@ -1,0 +1,53 @@
+package csc.com.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import csc.com.entity.User;
+import csc.com.service.UserRoleServiceImpl;
+import csc.com.service.UserService;
+import csc.com.service.UserServiceImplement;
+
+
+@Controller
+@EnableWebMvc
+public class UserController {
+	
+	@Autowired
+	private UserService userService;
+	
+	@RequestMapping(value = "/register/create", method = RequestMethod.POST, headers = "Accept=*/*", produces = "application/json")
+	public @ResponseBody String createUser(@RequestBody User user)
+			throws JsonProcessingException {
+		if (userService.addUser(user) != null) {
+			System.out.println("success!");
+			return new ObjectMapper().writeValueAsString("Successful");
+		} else {
+			System.out.println("error!");
+			return new ObjectMapper().writeValueAsString("error");
+		}
+	}
+	@RequestMapping(value = "/homeAdmin")
+	public String Admin(){
+		return "adminpage";
+	}
+	@RequestMapping(value = "/createuser")
+	public String createUser(){
+		return "createUserPage";
+	}
+	@RequestMapping(value = "/getusers", method = RequestMethod.GET)
+	public @ResponseBody List<User> getListUsers(){
+		List<User> users = userService.getUsers();
+		return users;
+	}
+}

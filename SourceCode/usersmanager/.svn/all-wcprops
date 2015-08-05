@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/accountsmanager/!svn/ver/127/trunk/usersmanager
+END
+.classpath
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/accountsmanager/!svn/ver/124/trunk/usersmanager/.classpath
+END
+.project
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/accountsmanager/!svn/ver/123/trunk/usersmanager/.project
+END
+pom.xml
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/accountsmanager/!svn/ver/124/trunk/usersmanager/pom.xml
+END

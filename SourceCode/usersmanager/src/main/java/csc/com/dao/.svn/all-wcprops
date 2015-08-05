@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/accountsmanager/!svn/ver/127/trunk/usersmanager/src/main/java/csc/com/dao
+END
+UserDAO.java
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/accountsmanager/!svn/ver/123/trunk/usersmanager/src/main/java/csc/com/dao/UserDAO.java
+END
+UserRoleDAO.java
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/accountsmanager/!svn/ver/126/trunk/usersmanager/src/main/java/csc/com/dao/UserRoleDAO.java
+END
+UserRoleDAOImpl.java
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/accountsmanager/!svn/ver/126/trunk/usersmanager/src/main/java/csc/com/dao/UserRoleDAOImpl.java
+END
+UserDAOImplement.java
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svn/accountsmanager/!svn/ver/127/trunk/usersmanager/src/main/java/csc/com/dao/UserDAOImplement.java
+END
