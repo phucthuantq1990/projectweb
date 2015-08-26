@@ -1,4 +1,4 @@
 <%
 	response.sendRedirect("login");
-	//dasdadasdasdasdasdasdasdfddas
+	//dasdadasdasdasduuuuuuuuuuuuuuuuuuuuuuuuuuuuasdasdasdfddas
 %>
