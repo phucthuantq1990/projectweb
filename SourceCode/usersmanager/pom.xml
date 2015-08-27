@@ -199,7 +199,7 @@
         </dependency>
 	</dependencies>
   
-  <build>
+ <build>
 
   <pluginManagement>
     <plugins>
@@ -218,7 +218,7 @@
         	<groupId>org.codehaus.mojo</groupId>
         	<artifactId>sonar-maven-plugin</artifactId>
         	<version></version>
-      </plugin>
+      	</plugin>
     </plugins>
   </pluginManagement>
 
