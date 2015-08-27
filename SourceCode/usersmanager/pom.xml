@@ -200,30 +200,17 @@
 	</dependencies>
   
   <build>
-
-  <pluginManagement>
+    <finalName>usersmanager</finalName>
     <plugins>
-
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>sonar-maven-plugin</artifactId>
-        <version>2.3</version>
-      </plugin>
-
-	<plugin>
-		<groupId>org.apache.maven.plugins</groupId>
-		<artifactId>maven-compiler-plugin</artifactId>
-		<version>3.3</version>
-		<configuration>
-			<source>1.7</source>
-			<target>1.7</target>
-		</configuration>
-	</plugin>
-
-    </plugins>
-  </pluginManagement>
-
-
-</build>
-
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.3</version>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+				</configuration>
+			</plugin>
+		</plugins>
+  </build>
 </project>
