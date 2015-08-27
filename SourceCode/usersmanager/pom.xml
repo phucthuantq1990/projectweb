@@ -192,12 +192,6 @@
 			<artifactId>spring-websocket</artifactId>
 			<version>${spring.version}</version>
 		</dependency>
-			<!-- Dependency for Mojo plugin -->
-		<dependency>
-			<groupId>org.codehaus.mojo</groupId>
-			<artifactId>sonar-maven-plugin</artifactId>
-			<version>2.3</version>
-		</dependency>
 		<dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-messaging</artifactId>
@@ -220,6 +214,11 @@
 		</configuration>
 	</plugin>
 
+      	<plugin>
+        	<groupId>org.codehaus.mojo</groupId>
+        	<artifactId>sonar-maven-plugin</artifactId>
+        	<version>2.3</version>
+      	</plugin>
     </plugins>
   </pluginManagement>
 
